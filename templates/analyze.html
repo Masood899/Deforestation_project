@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForestGuard AI - Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #27ae60;
+            --dark-green: #219653;
+            --light-green: #d5f5e3;
+            --dark-gray: #4a4a4a;
+            --medium-gray: #7f8c8d;
+            --light-gray: #ecf0f1;
+            --white: #ffffff;
+            --error-red: #dc3545;
+            --warning-orange: #fd7e14;
+            --positive-blue: #28a745;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .analysis-page {
+            padding: 60px 0;
+        }
+        
+        .page-header {
+            color: var(--primary-green);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+        }
+        
+        .image-comparison {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .image-box {
+            flex: 1;
+            min-height: 350px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--medium-gray);
+            font-size: 1.2rem;
+            border: 1px solid var(--light-green);
+            padding: 20px;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+        }
+        
+        .image-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+        
+        .analysis-content {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--light-green);
+        }
+        
+        .analysis-title {
+            color: var(--primary-green);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .analysis-text {
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+        
+        .primary-btn {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+            cursor: pointer;
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
+        }
+        
+        /* Results styling */
+        .analysis-results {
+            margin-top: 20px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: var(--light-green);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-card.highlight {
+            grid-column: span 2;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+        
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 5px 0;
+            color: var(--primary-green);
+        }
+        
+        .metric-unit {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+        }
+        
+        .ndvi-comparison {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .ndvi-plot {
+            flex: 1;
+        }
+        
+        .ndvi-image {
+            width: 100%;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+        }
+        
+        /* Biodiversity impact */
+        .biodiversity-impact {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .biodiversity-impact.severe {
+            border-left-color: var(--error-red);
+            background: #fff1f1;
+        }
+        
+        .biodiversity-impact.moderate {
+            border-left-color: var(--warning-orange);
+            background: #fff8f0;
+        }
+        
+        .biodiversity-impact.mild {
+            border-left-color: #ffc107;
+            background: #fffdf0;
+        }
+        
+        .biodiversity-impact.positive {
+            border-left-color: var(--positive-blue);
+            background: #f0fff4;
+        }
+        
+        .biodiversity-impact h5 {
+            margin-top: 0;
+            color: #343a40;
+        }
+        
+        .biodiversity-impact h5 i {
+            margin-right: 10px;
+        }
+        
+        .impact-details h6 {
+            margin: 15px 0 5px 0;
+            color: #495057;
+        }
+        
+        .conservation-tips {
+            color: #155724;
+        }
+        
+        .conservation-tips i {
+            color: var(--positive-blue);
+            margin-right: 8px;
+        }
+        
+        /* Error handling */
+        .error-message {
+            background: #fff3f3;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .error-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .retry-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="analysis-page">
+            <h2 class="page-header">Deforestation Analysis: {{ country }}</h2>
+            
+            <div class="image-comparison">
+                <div class="image-box">
+                    <div class="image-label">Before Image</div>
+                    <img id="before-image" class="image-preview" src="{{ before_image }}" alt="Before Image">
+                </div>
+                <div class="image-box">
+                    <div class="image-label">After Image</div>
+                    <img id="after-image" class="image-preview" src="{{ after_image }}" alt="After Image">
+                </div>
+            </div>
+            
+            <div class="analysis-content">
+                <h3 class="analysis-title">Deforestation Analysis</h3>
+                <div class="analysis-text">
+                    Click the button below to analyze the vegetation changes between these two images.
+                </div>
+                <button id="analyze-btn" class="primary-btn" onclick="analyzeImages()">
+                    Analyze Images
+                </button>
+                <div id="results-container"></div>
+            </div>
+            
+            <a href="{{ url_for('index') }}" class="primary-btn" style="display: block; text-align: center; width: fit-content; margin: 0 auto;">
+                ← Back to Chat Assistant
+            </a>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const country = "{{ country }}";
+
+        // Main analysis function
+        async function analyzeImages() {
+            try {
+                // UI State Management
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = "Analyzing...";
+                console.log(`Starting analysis for ${country}`);
+                
+                // Clear previous results
+                resultsContainer.innerHTML = '<div class="analysis-text">Processing images...</div>';
+
+                // API Request
+                const response = await fetch('{{ url_for("process") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ country })
+                });
+
+                // Error Handling
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Server returned an error');
+                }
+
+                // Process Results
+                const data = await response.json();
+                console.log('Analysis complete:', data.result);
+                displayResults(data.result);
+                
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                showError(error.message || 'Failed to analyze images');
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = "Analyze Images";
+            }
+        }
+
+        // Display results in the UI
+        function displayResults(results) {
+            const deforestationPercentage = results.deforestation_percentage;
+            
+            // Determine biodiversity impact level
+            let biodiversityImpact = "";
+            let impactLevel = "";
+            let conservationTips = [];
+            
+            if (deforestationPercentage > 5) {
+                impactLevel = "severe";
+                biodiversityImpact = "Critical habitat loss threatening endangered species and ecosystem collapse";
+                conservationTips = [
+                    "Immediate conservation efforts needed",
+                    "Habitat restoration programs recommended",
+                    "Strict protection of remaining forest areas"
+                ];
+            } else if (deforestationPercentage > 2) {
+                impactLevel = "moderate";
+                biodiversityImpact = "Significant species displacement and reduced genetic diversity";
+                conservationTips = [
+                    "Implement sustainable forestry practices",
+                    "Create wildlife corridors",
+                    "Monitor endangered species populations"
+                ];
+            } else if (deforestationPercentage > 0) {
+                impactLevel = "mild";
+                biodiversityImpact = "Localized species impact and marginal habitat fragmentation";
+                conservationTips = [
+                    "Selective logging practices",
+                    "Reforestation of degraded areas",
+                    "Community education programs"
+                ];
+            } else {
+                impactLevel = "positive";
+                biodiversityImpact = "Vegetation regrowth supporting species recovery";
+                conservationTips = [
+                    "Continue current conservation measures",
+                    "Monitor species repopulation",
+                    "Expand protected areas if possible"
+                ];
+            }
+
+            resultsContainer.innerHTML = `
+                <div class="analysis-results">
+                    <h4 class="analysis-title">Detailed Analysis Results</h4>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Initial Vegetation</div>
+                            <div class="metric-value">${results.total_veg_before.toLocaleString()}</div>
+                            <div class="metric-unit">pixels</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-label">Current Vegetation</div>
+                            <div class="metric-value">${results.total_veg_after.toLocaleString()}</div>
+                            <div class="metric-unit">pixels</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-label">Vegetation Lost</div>
+                            <div class="metric-value">${results.vegetation_lost.toLocaleString()}</div>
+                            <div class="metric-unit">pixels</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-label">Vegetation Gained</div>
+                            <div class="metric-value">${results.vegetation_gained.toLocaleString()}</div>
+                            <div class="metric-unit">pixels</div>
+                        </div>
+                        
+                        <div class="metric-card highlight">
+                            <div class="metric-label">Net Deforestation</div>
+                            <div class="metric-value" style="color: ${deforestationPercentage > 0 ? '#c62828' : '#2e7d32'}">
+                                ${Math.abs(deforestationPercentage).toFixed(2)}%
+                            </div>
+                            <div class="metric-unit">${deforestationPercentage > 0 ? 'increase' : 'decrease'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="biodiversity-impact ${impactLevel}">
+                        <h5><i class="fas fa-paw"></i> Biodiversity Impact Assessment</h5>
+                        <p>${biodiversityImpact}</p>
+                        
+                        <div class="impact-details">
+                            <h6>Potential Consequences:</h6>
+                            <ul>
+                                ${getBiodiversityConsequences(deforestationPercentage).map(item => `
+                                    <li>${item}</li>
+                                `).join('')}
+                            </ul>
+                            
+                            <h6>Recommended Conservation Actions:</h6>
+                            <ul class="conservation-tips">
+                                ${conservationTips.map(tip => `
+                                    <li><i class="fas fa-seedling"></i> ${tip}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="ndvi-comparison">
+                        <div class="ndvi-plot">
+                            <h5>NDVI Before Analysis</h5>
+                            <img src="data:image/png;base64,${results.before_plot}" 
+                                 alt="NDVI Before" 
+                                 class="ndvi-image">
+                        </div>
+                        <div class="ndvi-plot">
+                            <h5>NDVI After Analysis</h5>
+                            <img src="data:image/png;base64,${results.after_plot}" 
+                                 alt="NDVI After" 
+                                 class="ndvi-image">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getBiodiversityConsequences(deforestationPercentage) {
+            if (deforestationPercentage > 5) {
+                return [
+                    "High risk of species extinction",
+                    "Disruption of entire food chains",
+                    "Loss of keystone species",
+                    "Irreversible ecosystem damage"
+                ];
+            } else if (deforestationPercentage > 2) {
+                return [
+                    "Decline in sensitive species populations",
+                    "Reduced pollination services",
+                    "Increased human-wildlife conflicts",
+                    "Soil degradation and nutrient loss"
+                ];
+            } else if (deforestationPercentage > 0) {
+                return [
+                    "Marginal reduction in species diversity",
+                    "Increased edge effects in forests",
+                    "Temporary displacement of some species",
+                    "Minor soil erosion"
+                ];
+            } else {
+                return [
+                    "Improved habitat connectivity",
+                    "Species recolonization opportunities",
+                    "Enhanced ecosystem resilience",
+                    "Better carbon sequestration"
+                ];
+            }
+        }
+
+        function showError(message) {
+            resultsContainer.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">⚠️</span>
+                    <h4>Analysis Failed</h4>
+                    <p>${message}</p>
+                    <button onclick="analyzeImages()" class="retry-btn">Try Again</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+Flask
+groq
+numpy
+opencv-python
+matplotlib
+gunicorn
