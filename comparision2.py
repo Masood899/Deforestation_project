@@ -212,7 +212,7 @@ def chat():
             messages=[
                 {
                     "role": "system",
-                    "content": "You are ForestGuard AI, an expert assistant on deforestation patterns, environmental impact, and conservation strategies. Provide concise, factual information about forest cover changes, biodiversity impacts, and sustainable solutions."
+                    "content": "You are ForestGuard AI, an expert assistant on deforestation patterns, environmental impact, and conservation strategies. Provide concise, factual information about forest cover changes, biodiversity impacts, and sustainable solutions.Make the answer as concise as possible with an average of 100-300 tokens in the response"
                 },
                 {
                     "role": "user",
