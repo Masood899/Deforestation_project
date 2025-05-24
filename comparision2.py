@@ -17,7 +17,7 @@ os.makedirs(app.config['STATIC_IMAGES'], exist_ok=True)
 
 
 # Configuration
-GROQ_API_KEY = "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"
+GROQ_API_KEY = "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"
 
 # Then later in your code
 client = Groq(api_key=GROQ_API_KEY)
