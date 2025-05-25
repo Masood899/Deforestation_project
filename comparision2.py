@@ -95,11 +95,34 @@ def calculate_ndvi(image_path, target_size=None):
 def generate_ndvi_plot(ndvi, title):
     """Generate visualization of NDVI data as base64 encoded image"""
     plt.figure(figsize=(8, 6))
-    img = plt.imshow(ndvi, cmap="RdYlGn", vmin=-1, vmax=1)
+    
+    # Customize the colormap to better distinguish vegetation levels
+    cmap = plt.cm.RdYlGn  # Red-Yellow-Green colormap
+    
+    # Adjust the color scaling based on actual NDVI range
+    vmin = max(-1, np.min(ndvi))  # Don't go below -1
+    vmax = min(1, np.max(ndvi))   # Don't go above 1
+    
+    # If all values are positive, adjust vmin to show more variation
+    if vmin > 0:
+        vmin = 0  # Show full positive range
+        
+    # If all values are negative, adjust vmax to show more variation
+    if vmax < 0:
+        vmax = 0  # Show full negative range
+    
+    # Create the image with adjusted color range
+    img = plt.imshow(ndvi, cmap=cmap, vmin=vmin, vmax=vmax)
+    
     plt.title(title, fontsize=12)
     plt.axis("off")
+    
+    # Add colorbar with customized ticks
     cbar = plt.colorbar(img, fraction=0.046, pad=0.04)
     cbar.set_label('NDVI Value', rotation=270, labelpad=15)
+    
+    # Set specific ticks to highlight key thresholds
+    cbar.set_ticks([-1, -0.5, 0, 0.4, 0.6, 1])  # Emphasize vegetation threshold at 0.4
     
     buf = BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
